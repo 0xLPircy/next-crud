@@ -1,29 +1,34 @@
+import EditTopicForm from "@/app/_components/EditTopicForm";
 import React from "react";
 
-const EditTopic = () => {
+const getTopicById = async (id) => {
+  try {
+    console.log("in age ID", id);
+    const res = await fetch(`http://localhost:3000/api/topics/${id}`, {
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      throw new Error("Failed to fetch topics!");
+    }
+    // console.log("rees for get by id:", res);
+    return res.json();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const EditTopic = async ({ params }) => {
+  const { id } = params;
+  // console.log("PARAm", params);
+  const topic = await getTopicById(id);
+  const { title, description } = topic.topic;
+  // console.log("SEE", topic.topic.title, title, description);
+  // console.log("id:", id);
+
   return (
-    <form className="flex flex-col gap-3">
-      <input
-        className="border-[1px] border-[#21212150] rounded-sm 
-    px-[15px] py-[6px] w-full
-    text-[18px]"
-        type="text"
-        placeholder="Enter Title"
-      />
-      <input
-        className="border-[1px] border-[#21212150] rounded-sm 
-    px-[15px] py-[6px] w-full
-    text-[18px]"
-        type="text"
-        placeholder="Enter Description"
-      />
-      <button
-        className="bg-[#53e483] px-[15px] py-[6px] rounded-sm font-medium
-  hover:bg-[#328f51] hover:cursor-pointer"
-      >
-        Edit Topic
-      </button>
-    </form>
+    <>
+      <EditTopicForm id={id} curTitle={title} curDesc={description} />
+    </>
   );
 };
 
